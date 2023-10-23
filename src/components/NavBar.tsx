@@ -11,7 +11,7 @@ export default function NavBar() {
         <MaxWidthWrap>
            <div className="flex h-14 items-center justify-between border-b border-zinc-200 ">
             <Link href="/" className="z-40 flex font-semibold">
-                <span>quill.</span>
+                <span>saas.</span>
             </Link>
             {/** TODO: add mobile navbar */}
             <div className="hidden items-center space-x-4 sm:flex">
