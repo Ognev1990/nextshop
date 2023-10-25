@@ -1,6 +1,7 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { db } from "@/db";
+import { UTApi } from "uploadthing/server";
  
 // @see https://docs.uploadthing.com/getting-started/appdir 
 const f = createUploadthing();
@@ -29,3 +30,6 @@ export const ourFileRouter = {
 } satisfies FileRouter;
  
 export type OurFileRouter = typeof ourFileRouter;
+
+ 
+export const utapi = new UTApi();

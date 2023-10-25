@@ -3,6 +3,8 @@ import { publicProcedure, router, privateProcedure } from './trpc';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { db } from '@/db';
 import { z } from 'zod';
+import { utapi } from '@/app/api/uploadthing/core';
+
  
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -60,7 +62,9 @@ export const appRouter = router({
       where: {
         id: input.id,
       },
-    })
+    });
+    await utapi.deleteFiles(file.key);
+
     return file;
   }),
   getFile: privateProcedure.input(z.object({
