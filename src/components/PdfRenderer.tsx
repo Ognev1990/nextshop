@@ -2,7 +2,7 @@
 import {Document , Page, pdfjs} from "react-pdf";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { ChevronDown, ChevronUp, Loader2, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, RotateCw, Search } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import {useResizeDetector} from 'react-resize-detector';
 import { Button } from "./ui/button";
@@ -14,6 +14,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import SimpleBar from "simplebar-react";
+import PdfFullScreen from "./PdfFullScreen";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
@@ -27,6 +28,8 @@ export default function PdfRenderer({url}: PdfRendererProps) {
     const [numPages, setNumPages] = useState<number>();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [scale, setScale] = useState<number>(1);
+    const [rotation, setRotation] = useState<number>(0);
+
     const CustomPageValidator = z.object({
         page: z.string().refine((num) => Number(num) > 0 && Number(num) <= numPages!)
     });
@@ -58,6 +61,7 @@ export default function PdfRenderer({url}: PdfRendererProps) {
                 disabled={currentPage === 1}
                 onClick={() => {
                     setCurrentPage(currentPage - 1)
+                    setValue("page", `${currentPage - 1}`);
                 }}>
                     <ChevronUp className="h-4 w-4" />
                 </Button>
@@ -83,6 +87,7 @@ export default function PdfRenderer({url}: PdfRendererProps) {
                     aria-label="next page" 
                     onClick={() => {
                         setCurrentPage(currentPage + 1)
+                        setValue("page", `${currentPage + 1}`);
                     }}
                     disabled={currentPage === numPages}
                     >
@@ -113,6 +118,18 @@ export default function PdfRenderer({url}: PdfRendererProps) {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+
+                <Button 
+                    onClick={() => {
+                        setRotation((prev) => prev + 90);
+                    }}
+                    aria-label="rotate 90 deegrees" 
+                    variant="ghost"
+                >
+                    <RotateCw className="h-4 w-4" />
+                </Button>
+
+                <PdfFullScreen fileUrl={url}/>
             </div>
         </div>
         <div className="flex-1 w-full  max-h-screen">
@@ -138,6 +155,7 @@ export default function PdfRenderer({url}: PdfRendererProps) {
                             width={width ? width : 1} 
                             pageNumber={currentPage} 
                             scale={scale}
+                            rotate={rotation}
                             />
                     </Document>
                 </div>
